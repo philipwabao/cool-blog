@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Contact from "../components/Contact.astro";
+import { getCollection } from "astro:content";
+import { CATEGORIES, HOMEPAGE_LIMIT, sectionNum } from "../categories";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const fmt = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, ".");
+---
+<BaseLayout>
+  <section class="intro">
+    <div class="about-block">
+      <img class="avatar avatar-lg" src="/profile.jpg" alt="Philip Abao" width="132" height="132" onerror="this.onerror=null;this.src='/profile.svg'" />
+      <div>
+        <p class="about-text">
+          I'm <em style="font-style: italic; color: var(--accent);">Philip Abao</em>, a builder.
+          What I learn, what I break, what I make. I'll share it here.
+          <a href="/about" style="border-bottom: 1px solid var(--accent-soft);">More →</a>
+        </p>
+        <Contact variant="row" />
+      </div>
+    </div>
+  </section>
+
+  {CATEGORIES.map((cat, i) => {
+    const all = posts.filter((p) => p.data.category === cat.key);
+    const shown = all.slice(0, HOMEPAGE_LIMIT);
+    const overflow = all.length - shown.length;
+    return (
+      <section class="section">
+        <div class="section-head">
+          <span class="section-num">{sectionNum(i)}</span>
+          <h2 class="section-title">{cat.title}</h2>
+          <span class="section-rule"></span>
+        </div>
+
+        {shown.length === 0 ? (
+          <p class="empty">Nothing here yet.</p>
+        ) : (
+          <>
+            <ul class="post-list">
+              {shown.map((p) => (
+                <li>
+                  <span class="post-date">{fmt(p.data.pubDate)}</span>
+                  <span class="post-title">
+                    <a href={`/posts/${p.id}/`}>{p.data.title}</a>
+                  </span>
+                  <span class="post-tag">{p.data.tag ?? "essay"}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="see-all">
+              <a href={`/${cat.key}/`}>
+                {overflow > 0
+                  ? `See all ${all.length} entries →`
+                  : `Archive → /${cat.key}`}
+              </a>
+            </p>
+          </>
+        )}
+      </section>
+    );
+  })}
+</BaseLayout>

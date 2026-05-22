@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Contact from "../components/Contact.astro";
+---
+<BaseLayout
+  title="About"
+  description="About Philip Abao."
+  mark="— about · colophon —"
+  prose
+  colophonLeft="file · about.astro"
+  colophonRight="last updated · 2026·05·20"
+>
+  <div style="display: flex; align-items: center; gap: 28px; margin: 0 0 36px; flex-wrap: wrap;">
+    <img class="avatar avatar-lg" src="/profile.jpg" alt="Philip Abao" width="132" height="132" onerror="this.onerror=null;this.src='/profile.svg'" />
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: 44px; line-height: 1; letter-spacing: -0.02em; margin: 0;">Philip Abao</h2>
+  </div>
+
+  <article>
+    <p>
+      Hello, I am <strong>Philip Abao</strong>. I'm from the United States, and
+      I've lived most of my life in California.
+    </p>
+    <p>
+      I love technology. My uncle introduced me to computer science when I was
+      very young, and showed me the good it can do for the world.
+    </p>
+
+    <h2>What I work on</h2>
+    <p>
+      Currently building, improving, and creating a post-transformer
+      architecture with persistent memory and a new form of thought for AI.
+    </p>
+
+    <h2>Elsewhere</h2>
+    <Contact variant="stack" />
+  </article>
+</BaseLayout>

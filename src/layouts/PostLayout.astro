@@ -1,0 +1,32 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: Date;
+  tag?: string;
+  slug: string;
+  readingTime?: string;
+}
+
+const { title, description, pubDate, tag, slug, readingTime } = Astro.props;
+
+const dateFmt = pubDate.toISOString().slice(0, 10).replace(/-/g, "·");
+const isMemoriam = tag === "in memoriam";
+---
+<BaseLayout
+  title={title}
+  description={description}
+  mark={`— ${tag ?? "essay"} —`}
+  tag={description}
+  colophonRight={`published · ${dateFmt}${readingTime ? ` · ${readingTime}` : ""}`}
+  prose
+>
+  <article class={isMemoriam ? "memoriam" : undefined}>
+    <slot />
+  </article>
+  <p style="margin-top: 56px;">
+    <a href="/writing" style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);">← back to writing</a>
+  </p>
+</BaseLayout>

@@ -1,0 +1,63 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { CATEGORIES, sectionNum, type CategoryMeta } from "../categories";
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((cat, i) => ({
+    params: { category: cat.key },
+    props: { cat, index: i },
+  }));
+}
+
+interface Props {
+  cat: CategoryMeta;
+  index: number;
+}
+
+const { cat, index } = Astro.props as Props;
+
+const posts = (
+  await getCollection(
+    "posts",
+    ({ data }) => !data.draft && data.category === cat.key,
+  )
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const fmt = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, ".");
+---
+<BaseLayout
+  title={cat.title}
+  description={cat.description}
+  mark={`— ${cat.key} · archive —`}
+  colophonLeft={`entries · ${posts.length}`}
+  colophonRight="ordered · newest first"
+>
+  <section class="section">
+    <div class="section-head">
+      <span class="section-num">{sectionNum(index)}</span>
+      <h2 class="section-title">{cat.title}</h2>
+      <span class="section-rule"></span>
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="empty">Nothing here yet.</p>
+    ) : (
+      <ul class="post-list">
+        {posts.map((p) => (
+          <li>
+            <span class="post-date">{fmt(p.data.pubDate)}</span>
+            <span class="post-title">
+              <a href={`/posts/${p.id}/`}>{p.data.title}</a>
+            </span>
+            <span class="post-tag">{p.data.tag ?? "essay"}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <p class="see-all" style="margin-top: 28px;">
+      <a href="/">← Home</a>
+    </p>
+  </section>
+</BaseLayout>

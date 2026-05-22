@@ -1,0 +1,11 @@
+---
+import { SITE } from "../consts";
+interface Props {
+  mark?: string;
+  tag?: string;
+}
+const { tag = SITE.description } = Astro.props;
+---
+<header class="hdr">
+  <a href="/" class="hdr-tag">{tag}</a>
+</header>
