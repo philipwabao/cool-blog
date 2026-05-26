@@ -1,0 +1,97 @@
+---
+title: "Project Pidgen: v5 to v7"
+description: "Three versions of Project Pidgen on the same eval harness."
+pubDate: 2026-05-25
+category: "technical"
+tag: "template"
+---
+
+Project Pidgen is an ambitious project, aiming to improve the model's "thought,"
+its ability to perceive the "future" of its present action. The model has
+improved significantly from its previous version until now.
+
+## Overview
+
+| | PidgenV5 | PidgenV6 | PidgenV7 |
+|---|---|---|---|
+| Params | 9.34B | 7.31B | 865M |
+| Tokens seen | 8B | 12B | 5B |
+| GPU memory | 34.4 GB | 27.2 GB | 6.7 GB |
+| Val perplexity | 9.91 | 8.17 | 8.94 |
+
+GPU memory is constant across context length.
+
+## Benchmarks
+
+These five are the benchmarks all three versions report, so they are the only
+fair ground for a direct comparison.
+
+<div class="cmp-legend">
+  <span class="lg"><i style="background:#b5572e"></i> PidgenV5 · 9.34B</span>
+  <span class="lg"><i style="background:#4a6b3a"></i> PidgenV6 · 7.31B</span>
+  <span class="lg"><i style="background:#1e3a68"></i> PidgenV7 · 865M</span>
+</div>
+
+<figure>
+  <div class="cmp-chart">
+    <div class="cmp-group">
+      <div class="gl">PIQA</div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:69.1%;background:#b5572e"></span></span><span class="cmp-v">69.1</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:70.7%;background:#4a6b3a"></span></span><span class="cmp-v">70.7</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:64.0%;background:#1e3a68"></span></span><span class="cmp-v">64.0</span></div>
+    </div>
+    <div class="cmp-group">
+      <div class="gl">ARC-Easy</div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:54.9%;background:#b5572e"></span></span><span class="cmp-v">54.9</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:57.8%;background:#4a6b3a"></span></span><span class="cmp-v">57.8</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:48.0%;background:#1e3a68"></span></span><span class="cmp-v">48.0</span></div>
+    </div>
+    <div class="cmp-group">
+      <div class="gl">Winogrande</div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:51.4%;background:#b5572e"></span></span><span class="cmp-v">51.4</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:53.4%;background:#4a6b3a"></span></span><span class="cmp-v">53.4</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:56.5%;background:#1e3a68"></span></span><span class="cmp-v">56.5</span></div>
+    </div>
+    <div class="cmp-group">
+      <div class="gl">HellaSwag</div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:41.6%;background:#b5572e"></span></span><span class="cmp-v">41.6</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:46.9%;background:#4a6b3a"></span></span><span class="cmp-v">46.9</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:40.0%;background:#1e3a68"></span></span><span class="cmp-v">40.0</span></div>
+    </div>
+    <div class="cmp-group">
+      <div class="gl">ARC-Challenge</div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:32.8%;background:#b5572e"></span></span><span class="cmp-v">32.8</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:34.4%;background:#4a6b3a"></span></span><span class="cmp-v">34.4</span></div>
+      <div class="cmp-bar"><span class="cmp-track"><span style="width:29.5%;background:#1e3a68"></span></span><span class="cmp-v">29.5</span></div>
+    </div>
+  </div>
+  <figcaption><b>Figure 1.</b> Accuracy (%) on the five shared benchmarks.</figcaption>
+</figure>
+
+Full results below. Dashes mark benchmarks a given version did not report.
+
+| Benchmark | PidgenV5 | PidgenV6 | PidgenV7 |
+|-----------|----------|----------|----------|
+| PIQA | 69.1 | 70.7 | 64.0 |
+| ARC-Easy | 54.9 | 57.8 | 48.0 |
+| Winogrande | 51.4 | 53.4 | 56.5 |
+| HellaSwag | 41.6 | 46.9 | 40.0 |
+| ARC-Challenge | 32.8 | 34.4 | 29.5 |
+| MMLU (5-shot) | 26.0 | 27.3 | — |
+| SciQ | — | — | 74.5 |
+| OpenBookQA | — | — | 30.5 |
+| LAMBADA | — | — | 22.5 |
+| Val perplexity | 9.91 | 8.17 | 8.94 |
+
+## Long-context retrieval
+
+All three versions are post-transformer architectures with persistent memory.
+
+<figure>
+  <div class="benchchart">
+    <div class="benchrow"><span class="bl">PidgenV5 · 9.34B</span><span class="bt"><span style="width:0%"></span></span><span class="bv">0/10</span></div>
+    <div class="benchrow"><span class="bl">PidgenV6 · 7.31B</span><span class="bt"><span style="width:10%"></span></span><span class="bv">1/10</span></div>
+    <div class="benchrow"><span class="bl">PidgenV7 · 865M</span><span class="bt"><span style="width:100%"></span></span><span class="bv">10/10</span></div>
+  </div>
+  <figcaption><b>Figure 2.</b> Needle-in-haystack pass rate, 10 trials per version, context ~2k–5k tokens.</figcaption>
+</figure>
