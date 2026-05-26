@@ -575,4 +575,5 @@ a:hover { color: var(--accent); border-bottom-color: var(--accent); }
   .post-list li .post-tag { grid-column: 2; margin-top: 4px; }
   .section-title { font-size: 24px; }
   .prose article { font-size: 15.5px; }
+  .prose article table { display: block; overflow-x: auto; }
 }
