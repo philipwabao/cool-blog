@@ -481,6 +481,26 @@ a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .cmp-track > span { display: block; height: 100%; }
 .cmp-v { font-family: var(--mono); font-size: 11px; font-weight: 600; text-align: right; color: var(--ink-2); }
 
+/* tribute container */
+.prose article .tribute {
+  border: 1px solid var(--rule);
+  background: var(--paper-2);
+  padding: 4px 16px 6px;
+  margin: 0;
+  max-width: 380px;
+}
+.prose article .tribute ol { list-style: none; padding: 0; margin: 0; }
+.prose article .tribute li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+  padding: 6px 0; border-top: 1px solid var(--rule);
+}
+.prose article .tribute li:first-child { border-top: none; }
+.prose article .tribute .t-name { font-family: var(--serif); font-size: 15px; color: var(--ink); }
+.prose article .tribute .t-note {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.04em;
+  color: var(--ink-3); text-align: right; white-space: nowrap;
+}
+
 .prose article .refs { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
 .prose article .refs ol { padding-left: 1.4em; margin: 0; }
 .prose article .refs li + li { margin-top: 8px; }

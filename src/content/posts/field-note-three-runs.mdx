@@ -19,8 +19,6 @@ improved significantly from its previous version until now.
 | GPU memory | 34.4 GB | 27.2 GB | 6.7 GB |
 | Val perplexity | 9.91 | 8.17 | 8.94 |
 
-GPU memory is constant across context length.
-
 ## Benchmarks
 
 These five are the benchmarks all three versions report, so they are the only
@@ -85,8 +83,6 @@ Full results below. Dashes mark benchmarks a given version did not report.
 
 ## Long-context retrieval
 
-All three versions are post-transformer architectures with persistent memory.
-
 <figure>
   <div class="benchchart">
     <div class="benchrow"><span class="bl">PidgenV5 · 9.34B</span><span class="bt"><span style="width:0%"></span></span><span class="bv">0/10</span></div>
@@ -95,3 +91,15 @@ All three versions are post-transformer architectures with persistent memory.
   </div>
   <figcaption><b>Figure 2.</b> Needle-in-haystack pass rate, 10 trials per version, context ~2k–5k tokens.</figcaption>
 </figure>
+
+## Inspired by
+
+<div class="tribute">
+  <ol>
+    <li><span class="t-name">Geoffrey Hinton</span><span class="t-note">deep learning</span></li>
+    <li><span class="t-name">Richard Sutton</span><span class="t-note">reinforcement learning</span></li>
+    <li><span class="t-name">Yann LeCun</span><span class="t-note">convolutional networks</span></li>
+    <li><span class="t-name">Jürgen Schmidhuber</span><span class="t-note">recurrent networks</span></li>
+    <li><span class="t-name">Yoshua Bengio</span><span class="t-note">neural language models</span></li>
+  </ol>
+</div>
