@@ -24,9 +24,7 @@ const total = posts.length;
     </div>
 
     {total === 0 ? (
-      <p style="font-family: var(--serif); font-style: italic; color: var(--ink-2);">
-        Nothing here yet.
-      </p>
+      <p class="empty">Nothing here yet.</p>
     ) : (
       <ul class="post-list">
         {posts.map((p) => (

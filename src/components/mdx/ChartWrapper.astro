@@ -1,0 +1,19 @@
+---
+/**
+ * ChartWrapper.astro
+ * Thin shell for the custom .cmp-chart / .benchchart research visuals.
+ * Ensures dark theme compatibility and consistent spacing.
+ * You can still use the raw divs with the old classes — this is just for new content.
+ */
+---
+
+<div class="chart-wrapper">
+  <slot />
+</div>
+
+<style>
+  .chart-wrapper {
+    /* future: could add container queries or legend theming here */
+  }
+  /* Ensure inner tracks etc pick up dark vars (already handled in global.css) */
+</style>

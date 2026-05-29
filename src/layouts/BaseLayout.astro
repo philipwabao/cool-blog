@@ -4,6 +4,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import Colophon from "../components/Colophon.astro";
 import { SITE } from "../consts";
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -31,9 +32,29 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Theme init: prevents flash, respects saved preference or system -->
+  <script is:inline>
+    (function () {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = stored || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+
+    // Re-apply chosen theme after every View Transition (fixes theme not transferring on navigation)
+    document.addEventListener('astro:after-swap', () => {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = stored || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    });
+  </script>
+  <ClientRouter />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="light only" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#1e3a68" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#7a9cc8" media="(prefers-color-scheme: dark)" />
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />

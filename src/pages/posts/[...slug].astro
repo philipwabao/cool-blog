@@ -23,7 +23,7 @@ const readingTime: string | undefined = remarkPluginFrontmatter?.minutesRead;
   slug={post.id}
   readingTime={readingTime}
 >
-  <h2 style="font-family: var(--serif); font-weight: 400; font-size: 44px; line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 12px;">{post.data.title}</h2>
-  <p style="font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink-2); margin: 0 0 36px;">{post.data.description}</p>
+  <h2 class="post-title-hero">{post.data.title}</h2>
+  <p class="post-desc">{post.data.description}</p>
   <Content />
 </PostLayout>

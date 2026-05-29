@@ -1,11 +1,77 @@
 ---
 import { SITE } from "../consts";
+import ThemeToggle from "./ThemeToggle.astro";
+
 interface Props {
   mark?: string;
   tag?: string;
 }
 const { tag = SITE.description } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const isWriting = pathname === '/writing' || pathname.startsWith('/posts/') || pathname === '/technical' || pathname === '/business' || pathname === '/personal' || pathname === '/product';
+const isAbout = pathname === '/about';
 ---
-<header class="hdr">
-  <a href="/" class="hdr-tag">{tag}</a>
+
+<header class="hdr" transition:name="site-header">
+  <div class="hdr-inner">
+    <a href="/" class="site-name" transition:name="site-name">Philip Abao</a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/writing" class={isWriting ? 'active' : ''} aria-current={isWriting ? 'page' : undefined}>Writing</a>
+      <a href="/about" class={isAbout ? 'active' : ''} aria-current={isAbout ? 'page' : undefined}>About</a>
+    </nav>
+
+    <ThemeToggle />
+  </div>
+
+  {/* Quiet tagline on home only — keeps the original spirit without dominating */}
+  {pathname === '/' && (
+    <div class="hdr-tagline">
+      <a href="/" class="hdr-tag">{tag}</a>
+    </div>
+  )}
 </header>
+
+<style>
+  .hdr {
+    display: block;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 8px;
+  }
+  .hdr-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hdr-tagline {
+    margin-top: 10px;
+    text-align: center;
+  }
+  .hdr-tagline .hdr-tag {
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+  @media (max-width: 520px) {
+    .hdr-inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .site-nav {
+      order: 3;
+      justify-content: center;
+      padding-top: 4px;
+      border-top: 1px solid var(--rule);
+      margin-top: 4px;
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 18px;
+      right: 16px;
+    }
+  }
+</style>

@@ -6,6 +6,8 @@ category: "technical"
 tag: "template"
 ---
 
+import Tribute from '../../components/mdx/Tribute.astro';
+
 Project Pidgen is an ambitious project, aiming to improve the model's "thought,"
 its ability to perceive the "future" of its present action. The model has
 improved significantly from its previous version.
@@ -99,12 +101,10 @@ tokens, far short of what a model this size would normally train on.
 
 ## Inspired by
 
-<div class="tribute">
-  <ol>
-    <li><span class="t-name">Geoffrey Hinton</span><span class="t-note">deep learning</span></li>
-    <li><span class="t-name">Richard Sutton</span><span class="t-note">reinforcement learning</span></li>
-    <li><span class="t-name">Yann LeCun</span><span class="t-note">convolutional networks</span></li>
-    <li><span class="t-name">Jürgen Schmidhuber</span><span class="t-note">recurrent networks</span></li>
-    <li><span class="t-name">Yoshua Bengio</span><span class="t-note">neural language models</span></li>
-  </ol>
-</div>
+<Tribute authors={[
+  { name: "Geoffrey Hinton", note: "deep learning" },
+  { name: "Richard Sutton", note: "reinforcement learning" },
+  { name: "Yann LeCun", note: "convolutional networks" },
+  { name: "Jürgen Schmidhuber", note: "recurrent networks" },
+  { name: "Yoshua Bengio", note: "neural language models" },
+]} />

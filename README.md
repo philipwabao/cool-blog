@@ -44,5 +44,8 @@ src/
 
 ## Design
 
-Print-inspired editorial. Paper tones, ferrous orange accent, Instrument
-Serif + Inter + JetBrains Mono. Tokens live in `:root` in `global.css`.
+Print-inspired editorial. Warm paper tones (light + dark "night paper" variants), deep navy accent (adapts in dark), Lora + Inter + JetBrains Mono. All tokens in `:root` + `[data-theme="dark"]` in `global.css`.
+
+**Modern frontend polish (2026)**: View Transitions, reading progress on articles, elegant masthead + persistent nav, theme toggle, refined prose measure (68ch), subtle motion, accessible focus, print styles, reusable MDX components for research visuals (`Tribute`, `QuoteStamp`, `ChartWrapper` in `src/components/mdx/`).
+
+The aesthetic remains hand-crafted and quiet — a builder's notebook, not a product site.
