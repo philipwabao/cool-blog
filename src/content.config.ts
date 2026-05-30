@@ -12,6 +12,7 @@ const posts = defineCollection({
     category: z.enum(CATEGORY_KEYS),
     tag: z.string().optional(),
     draft: z.boolean().default(false),
+    centerHero: z.boolean().default(false),
   }),
 });
 

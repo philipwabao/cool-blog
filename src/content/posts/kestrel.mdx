@@ -1,12 +1,19 @@
 ---
-title: "Kestrel (Persistent memory)"
+title: "Kestrel"
 description: "Custom text classifiers on our persistent memory architecture for 24/7 workloads."
 pubDate: 2026-05-30
 category: "product"
 tag: "note"
+centerHero: true
 ---
 
-Kestrel is the name for the custom text classifier model. It's named after the bird. A small falcon known for its ability to hover in place while hunting.
+import KestrelStream from '../../components/mdx/KestrelStream.astro';
+
+Happy to release Kestrel, a custom text classifier on our persistent memory architecture for 24/7 workloads.
+
+Kestrel is a different approach to an LLM. I mean, it is one — a baseline that has seen over many, many data.
+
+It's named after the bird. A small falcon known for its ability to hover in place while hunting.
 
 ![American Kestrel](/images/kestrel.jpg)
 
@@ -22,43 +29,4 @@ The flat resource usage is the main reason this approach looks promising for 24/
 
 This is especially useful for companies that need reliable chat moderation running around the clock.
 
-<div class="kestrel-viz">
-  <div class="viz-header">
-    <span>Live chat stream (simulated)</span>
-  </div>
-
-  <div class="messages">
-    <div class="msg">
-      <div class="text">"You are literally the worst player I have ever seen. Uninstall the game."</div>
-      <div class="label high">Toxicity: High</div>
-    </div>
-    <div class="msg">
-      <div class="text">"Thanks for the quick help, really appreciate it!"</div>
-      <div class="label low">Toxicity: Low</div>
-    </div>
-    <div class="msg">
-      <div class="text">"This is the third time my order is late, I'm done with this garbage service."</div>
-      <div class="label med">Toxicity: Medium</div>
-    </div>
-    <div class="msg">
-      <div class="text">"Can you help me reset my password please?"</div>
-      <div class="label low">Toxicity: Low</div>
-    </div>
-  </div>
-
-  <div class="resource">
-    <div class="resource-label">Resource usage during continuous operation</div>
-    <div class="bars">
-      <div class="bar-row">
-        <span class="bar-label">Kestrel</span>
-        <div class="bar"><div class="fill" style="width: 28%"></div></div>
-        <span class="value">Flat</span>
-      </div>
-      <div class="bar-row traditional">
-        <span class="bar-label">Transformer</span>
-        <div class="bar"><div class="fill growing" style="width: 100%"></div></div>
-        <span class="value">Grows</span>
-      </div>
-    </div>
-  </div>
-</div>
+<KestrelStream />

@@ -710,6 +710,15 @@ a:focus-visible {
   color: var(--ink-2);
   margin: 0 0 36px;
 }
+.post-title-hero.is-centered,
+.post-desc.is-centered {
+  text-align: center;
+}
+.post-desc.is-centered {
+  max-width: 52ch;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* Styled back link (replaces raw inline p) */
 .back-link {
@@ -796,6 +805,13 @@ a:focus-visible {
   .about-name { font-size: 28px; }
 }
 
+.prose .kestrel-subtitle,
+article .kestrel-subtitle {
+  text-align: center !important;
+  margin-bottom: 1.75em;
+  color: var(--ink-2);
+}
+
 /* Kestrel 24/7 chat moderation visualizer */
 .kestrel-viz {
   border: 1px solid var(--rule);
@@ -811,8 +827,26 @@ a:focus-visible {
   margin-bottom: 12px;
   color: var(--ink-2);
 }
+.kestrel-viz .viz-header .live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.kestrel-viz .live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--good);
+  flex: none;
+  animation: kestrelPulse 1.6s ease-in-out infinite;
+}
+@keyframes kestrelPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.65); }
+}
 .kestrel-viz .status {
-  color: var(--good);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
 }
 .kestrel-viz .messages {
   display: flex;
@@ -844,6 +878,12 @@ a:focus-visible {
 .kestrel-viz .label.med { background: #3a3222; color: #eb8; }
 .kestrel-viz .label.low { background: #2a3a2a; color: #8e8; }
 
+@keyframes kestrelMsgIn {
+  from { opacity: 0; transform: translateY(-7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kestrel-viz .msg.is-new { animation: kestrelMsgIn 0.45s ease both; }
+
 .kestrel-viz .resource {
   border-top: 1px solid var(--rule);
   padding-top: 12px;
@@ -872,13 +912,45 @@ a:focus-visible {
 .kestrel-viz .bar .fill {
   height: 100%;
   background: #b5572e;
-  transition: width 0.3s ease;
+  transition: width 0.6s ease, background 0.4s ease;
+}
+.kestrel-viz .bar-row.kv2 .fill {
+  background: #7a9cc8;
 }
 .kestrel-viz .bar-row.traditional .fill {
   background: var(--accent);
 }
+.kestrel-viz .bar-row.traditional .fill.warn {
+  background: #c0392b;
+}
 .kestrel-viz .value {
-  width: 50px;
+  width: 60px;
   text-align: right;
   color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.kestrel-viz .value.crash {
+  color: #e74c3c;
+  font-weight: 600;
+}
+@keyframes kestrelShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+}
+.kestrel-viz .bar-row.crashed { animation: kestrelShake 0.28s ease 2; }
+.kestrel-viz.is-done .live-dot {
+  animation: none;
+  background: var(--ink-3);
+}
+.kestrel-viz .resource-note {
+  margin-top: 10px;
+  color: var(--ink-3);
+  font-size: 11px;
+  line-height: 1.45;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kestrel-viz .live-dot,
+  .kestrel-viz .msg.is-new,
+  .kestrel-viz .bar-row.crashed { animation: none; }
 }

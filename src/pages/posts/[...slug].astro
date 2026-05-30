@@ -23,7 +23,7 @@ const readingTime: string | undefined = remarkPluginFrontmatter?.minutesRead;
   slug={post.id}
   readingTime={readingTime}
 >
-  <h2 class="post-title-hero">{post.data.title}</h2>
-  <p class="post-desc">{post.data.description}</p>
+  <h2 class={`post-title-hero${post.data.centerHero ? " is-centered" : ""}`}>{post.data.title}</h2>
+  <p class={`post-desc${post.data.centerHero ? " is-centered" : ""}`}>{post.data.description}</p>
   <Content />
 </PostLayout>
