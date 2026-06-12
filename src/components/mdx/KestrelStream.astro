@@ -1,0 +1,145 @@
+---
+// Animated "live chat stream" demo for the Kestrel post.
+// Messages stream in; the transformer's memory climbs while Kestrel holds flat.
+---
+<div class="kestrel-viz" data-kestrel-viz>
+  <div class="viz-header">
+    <span class="live"><i class="live-dot"></i> Live chat stream (simulated)</span>
+    <span class="status" data-stat>4 processed</span>
+  </div>
+
+  <div class="messages" data-messages>
+    <div class="msg">
+      <div class="text">"You are literally the worst player I have ever seen. Uninstall the game."</div>
+      <div class="label high">Toxicity: High</div>
+    </div>
+    <div class="msg">
+      <div class="text">"Thanks for the quick help, really appreciate it!"</div>
+      <div class="label low">Toxicity: Low</div>
+    </div>
+    <div class="msg">
+      <div class="text">"This is the third time my order is late, I'm done with this garbage service."</div>
+      <div class="label med">Toxicity: Medium</div>
+    </div>
+    <div class="msg">
+      <div class="text">"Can you help me reset my password please?"</div>
+      <div class="label low">Toxicity: Low</div>
+    </div>
+  </div>
+
+  <div class="resource">
+    <div class="resource-label">Memory while the stream runs · KV cache limit 8 GB</div>
+    <div class="bars">
+      <div class="bar-row">
+        <span class="bar-label">Kestrel</span>
+        <div class="bar"><div class="fill" style="width: 5%"></div></div>
+        <span class="value">Flat</span>
+      </div>
+      <div class="bar-row kv2">
+        <span class="bar-label">KV cache 2.0</span>
+        <div class="bar"><div class="fill" data-kv2-fill style="width: 50%"></div></div>
+        <span class="value" data-kv2-val>Bounded</span>
+      </div>
+      <div class="bar-row traditional">
+        <span class="bar-label">KV cache</span>
+        <div class="bar"><div class="fill growing" data-tf-fill style="width: 95%"></div></div>
+        <span class="value" data-tf-val>Grows</span>
+      </div>
+    </div>
+    <div class="resource-note" data-note>Standard KV cache never forgets — it grows until it runs out of memory. KV cache 2.0 stays bounded with a hard window, dropping context past the cutoff. Kestrel stays bounded too, but older detail decays gradually instead of vanishing at a cutoff.</div>
+  </div>
+</div>
+
+<script>
+  function initKestrelStream() {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const viz = document.querySelector('[data-kestrel-viz]') as HTMLElement | null;
+    if (reduce || !viz || viz.dataset.init) return;
+    viz.dataset.init = '1';
+
+    const pool: [string, string, string][] = [
+      ['"Get off this server, nobody wants you here."', 'high', 'Toxicity: High'],
+      ['"Where can I find the documentation for the API?"', 'low', 'Toxicity: Low'],
+      ['"If you say that again I will report and ban you myself."', 'med', 'Toxicity: Medium'],
+      ['"Great match everyone, gg!"', 'low', 'Toxicity: Low'],
+      ['"This update is trash and whoever made it should be fired."', 'med', 'Toxicity: Medium'],
+      ['"Welcome to the channel, glad to have you!"', 'low', 'Toxicity: Low'],
+      ['"You are pathetic, do everyone a favor and quit."', 'high', 'Toxicity: High'],
+      ['"Is there a way to export my data as CSV?"', 'low', 'Toxicity: Low'],
+    ];
+
+    const msgs = viz.querySelector('[data-messages]') as HTMLElement;
+    const statEl = viz.querySelector('[data-stat]') as HTMLElement;
+    const tfFill = viz.querySelector('[data-tf-fill]') as HTMLElement;
+    const tfVal = viz.querySelector('[data-tf-val]') as HTMLElement;
+    const kv2Fill = viz.querySelector('[data-kv2-fill]') as HTMLElement;
+    const kv2Val = viz.querySelector('[data-kv2-val]') as HTMLElement;
+    const noteEl = viz.querySelector('[data-note]') as HTMLElement;
+    const tfRow = tfFill.closest('.bar-row') as HTMLElement;
+
+    const BASE = 0.4;        // starting cache (GB)
+    const NAIVE_SLOPE = 0.4; // standard KV growth per message (GB)
+    const KV2_SLOPE = 0.3;   // KV cache 2.0 growth per message (GB) before it compacts
+    const KV2_PLATEAU = 4.0; // KV cache 2.0 bounded ceiling (GB) — survives, but lossy
+    const LIMIT = 8.0;       // hard memory ceiling — standard KV crashes here (GB)
+    const STOP_AT = 40;      // messages processed before the stream ends
+    let i = 0, processed = 4, crashed = false;
+
+    const pct = (gb: number) => Math.min(100, gb / LIMIT * 100) + '%';
+
+    // Take over from the static fallback without a flash.
+    [tfFill, kv2Fill].forEach((el) => { el.style.transition = 'none'; });
+    tfFill.style.width = pct(BASE); tfVal.textContent = BASE.toFixed(1) + ' GB';
+    kv2Fill.style.width = pct(BASE); kv2Val.textContent = BASE.toFixed(1) + ' GB';
+    void tfFill.offsetWidth;
+    [tfFill, kv2Fill].forEach((el) => { el.style.transition = ''; });
+
+    const timer = setInterval(() => {
+      if (!document.body.contains(viz)) { clearInterval(timer); return; }
+
+      const m = pool[i % pool.length]; i++; processed++;
+      const row = document.createElement('div');
+      row.className = 'msg is-new';
+      row.innerHTML = '<div class="text">' + m[0] + '</div><div class="label ' + m[1] + '">' + m[2] + '</div>';
+      msgs.insertBefore(row, msgs.firstChild);
+      while (msgs.children.length > 4) msgs.removeChild(msgs.lastChild!);
+
+      // Standard KV cache: grows linearly until it hits the limit and crashes.
+      if (!crashed) {
+        const gb = BASE + (processed - 4) * NAIVE_SLOPE;
+        if (gb >= LIMIT) {
+          crashed = true;
+          tfFill.style.width = '100%';
+          tfFill.classList.add('warn');
+          tfRow.classList.add('crashed');
+          tfVal.textContent = 'OOM';
+          tfVal.classList.add('crash');
+          noteEl.textContent =
+            'Standard KV cache hit its ' + LIMIT.toFixed(0) + ' GB limit and crashed. KV cache 2.0 survives by cutting off context past its window. Kestrel held flat at ' + BASE.toFixed(1) + ' GB — older detail decays gradually, not dropped at a cutoff.';
+        } else {
+          tfFill.style.width = pct(gb);
+          tfVal.textContent = gb.toFixed(1) + ' GB';
+        }
+      }
+
+      // KV cache 2.0: grows, then holds a bounded window (drops old context) — never crashes.
+      const gb2 = Math.min(KV2_PLATEAU, BASE + (processed - 4) * KV2_SLOPE);
+      kv2Fill.style.width = pct(gb2);
+      kv2Val.textContent = gb2.toFixed(1) + ' GB';
+
+      statEl.textContent = crashed
+        ? processed + ' processed · Kestrel + 2.0'
+        : processed + ' processed';
+
+      // Stream ends.
+      if (processed >= STOP_AT) {
+        clearInterval(timer);
+        viz.classList.add('is-done');
+        statEl.textContent = STOP_AT + ' processed · stream ended';
+      }
+    }, 1300);
+  }
+
+  // Runs on first load and after every View Transition navigation.
+  document.addEventListener('astro:page-load', initKestrelStream);
+</script>

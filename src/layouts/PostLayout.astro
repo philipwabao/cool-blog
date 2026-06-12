@@ -1,0 +1,70 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { formatStamp } from "../lib/format";
+
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: Date;
+  tag?: string;
+  category?: string;
+  readingTime?: string;
+}
+
+const { title, description, pubDate, tag, category, readingTime } = Astro.props;
+
+const dateFmt = formatStamp(pubDate);
+const isMemoriam = tag === "in memoriam";
+const filed = ["filed", category, tag].filter(Boolean).join(" / ");
+---
+<BaseLayout
+  title={title}
+  description={description}
+  colophonLeft={filed}
+  colophonRight={`published / ${dateFmt}${readingTime ? ` / ${readingTime}` : ""}`}
+  prose
+>
+  <!-- Reading progress (only meaningful on long articles) -->
+  <div id="reading-progress" class="reading-progress" style="width: 0%"></div>
+
+  <article class={isMemoriam ? "memoriam" : undefined} transition:name="post-article">
+    <slot />
+  </article>
+
+  <a
+    href="/writing"
+    class="mt-14 inline-flex items-baseline gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-3 transition-colors hover:text-accent"
+  >← all entries</a>
+</BaseLayout>
+
+<script>
+  // Reading progress — lightweight, no deps. Re-bound on every page load so it
+  // survives Astro View Transitions (ClientRouter swaps don't re-run modules).
+  function initReadingProgress() {
+    const progress = document.getElementById('reading-progress') as HTMLDivElement | null;
+    if (!progress) return;
+
+    const update = () => {
+      const article = document.querySelector('article');
+      if (!article) return;
+      const total = article.scrollHeight - window.innerHeight;
+      const scrolled = Math.max(0, window.scrollY - (article.offsetTop || 0));
+      const pct = total > 0 ? Math.min(100, Math.max(0, (scrolled / total) * 100)) : 0;
+      progress.style.width = pct + '%';
+    };
+
+    // Replace any listeners left over from a previous page.
+    const w = window as typeof window & { __readingProgress?: () => void };
+    if (w.__readingProgress) {
+      window.removeEventListener('scroll', w.__readingProgress);
+      window.removeEventListener('resize', w.__readingProgress);
+    }
+    w.__readingProgress = update;
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    setTimeout(update, 60);
+  }
+
+  initReadingProgress();
+  document.addEventListener('astro:page-load', initReadingProgress);
+</script>

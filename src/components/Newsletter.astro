@@ -1,0 +1,87 @@
+---
+/**
+ * Correspondence (newsletter signup). Structure + graceful client-side
+ * confirmation.
+ *
+ * To make it live, point the <form> at your provider (Buttondown, ConvertKit,
+ * Listmonk, ...): set `action` to the provider's endpoint, `method="post"`,
+ * and remove the `data-demo` attribute so the progressive-enhancement script
+ * lets the real submission through.
+ */
+import SectionMark from "./SectionMark.astro";
+---
+<section class="mt-20 sm:mt-24">
+  <SectionMark label="Newsletter" />
+
+  <div class="grid gap-y-4 pt-7 sm:grid-cols-[8.5rem_1fr] sm:gap-x-10">
+    <p class="font-mono text-[11px] tracking-[0.06em] text-ink-3 sm:text-right">email</p>
+
+    <div class="min-w-0 max-w-xl">
+      <h2 class="font-display text-[26px] font-medium tracking-tight text-ink">
+        New entries, by email
+      </h2>
+      <p class="mt-3 font-serif text-[15.5px] leading-relaxed text-ink-2">
+        A short note when I publish something new. A few times a year at most.
+      </p>
+
+      <form
+        id="newsletter-form"
+        data-demo
+        action="#"
+        method="post"
+        class="mt-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:gap-4"
+        novalidate
+      >
+        <label for="newsletter-email" class="sr-only">Email address</label>
+        <input
+          id="newsletter-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          placeholder="you@example.com"
+          class="min-w-0 flex-1 border-0 border-b border-rule-strong bg-transparent px-0 pb-2 font-mono text-[13px] text-ink placeholder:text-ink-3 focus:border-accent"
+        />
+        <button
+          type="submit"
+          class="flex-none border border-ink px-5 py-2 font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink transition-colors hover:border-accent hover:bg-accent hover:text-paper motion-reduce:transition-none"
+        >
+          Subscribe
+        </button>
+      </form>
+
+      <p id="newsletter-msg" role="status" aria-live="polite" class="mt-3 min-h-[1.2em] font-mono text-[10.5px] tracking-[0.04em] text-ink-3">
+        Unsubscribe anytime.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initNewsletter() {
+    const form = document.getElementById("newsletter-form") as HTMLFormElement | null;
+    const msg = document.getElementById("newsletter-msg");
+    if (!form || !msg) return;
+    if (form.dataset.bound) return;
+    form.dataset.bound = "true";
+
+    form.addEventListener("submit", (e) => {
+      const input = form.querySelector<HTMLInputElement>("#newsletter-email");
+      const valid = input && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+
+      // Demo mode: never actually navigates; confirms locally.
+      if (form.hasAttribute("data-demo")) {
+        e.preventDefault();
+        if (!valid) {
+          msg.textContent = "Please enter a valid email.";
+          input?.focus();
+          return;
+        }
+        msg.textContent = "Thanks, you're on the list.";
+        form.reset();
+      }
+    });
+  }
+  initNewsletter();
+  document.addEventListener("astro:page-load", initNewsletter);
+</script>

@@ -1,0 +1,47 @@
+---
+import ThemeToggle from "./ThemeToggle.astro";
+import { CATEGORIES } from "../categories";
+
+// Normalize trailing slash so active state matches regardless of how the
+// host serves the URL (links are generated with a trailing slash).
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const categoryPaths = CATEGORIES.map((c) => `/${c.key}`);
+const isWriting =
+  path === "/writing" ||
+  path.startsWith("/posts") ||
+  categoryPaths.includes(path);
+const isAbout = path === "/about";
+
+const navLink =
+  "font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink-3 transition-colors hover:text-ink";
+const navActive =
+  "text-ink underline decoration-accent decoration-1 underline-offset-[6px]";
+---
+<header
+  class="mb-12 flex flex-wrap items-center justify-between gap-4 border-b border-rule-strong pb-4 sm:mb-16"
+  transition:name="site-header"
+>
+  <a
+    href="/"
+    class="font-mono text-[12px] uppercase tracking-[0.24em] text-ink transition-colors hover:text-accent"
+    transition:name="site-name"
+  >
+    Philip Abao
+  </a>
+
+  <div class="flex items-center gap-6">
+    <nav class="flex items-center gap-6" aria-label="Primary">
+      <a
+        href="/writing"
+        class:list={[navLink, isWriting && navActive]}
+        aria-current={isWriting ? "page" : undefined}>Writing</a
+      >
+      <a
+        href="/about"
+        class:list={[navLink, isAbout && navActive]}
+        aria-current={isAbout ? "page" : undefined}>About</a
+      >
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>

@@ -1,0 +1,11 @@
+---
+interface Props {
+  left: string;
+  right: string;
+}
+const { left, right } = Astro.props;
+---
+<div class="mb-11 flex items-baseline justify-between gap-4 border-b-[3px] border-double border-rule-strong pb-4 font-mono text-[10.5px] tracking-[0.08em] text-ink-3">
+  <span>{left}</span>
+  <span class="text-right">{right}</span>
+</div>

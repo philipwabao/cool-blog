@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { categoryByKey } from "../categories";
+import { formatStamp, isoDate } from "../lib/format";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+  /** Permanent ledger number, e.g. "004". */
+  number: string;
+  /** Title heading level. Use 2 when the entry sits directly under a page h1. */
+  headingLevel?: 2 | 3;
+  /** Stamp the newest entry. */
+  latest?: boolean;
+}
+
+const { post, number, headingLevel = 3, latest = false } = Astro.props;
+const cat = categoryByKey(post.data.category);
+const href = `/posts/${post.id}/`;
+const Title = headingLevel === 2 ? "h2" : "h3";
+---
+<article
+  data-cat={post.data.category}
+  class="group relative grid border-t border-rule py-6 sm:grid-cols-[8.5rem_1fr] sm:gap-x-10 sm:py-7"
+>
+  {/* hover tick: a mark struck from the spine toward the entry */}
+  <span
+    aria-hidden="true"
+    class="absolute left-[9.75rem] top-[3.1rem] hidden h-px w-6 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none sm:block"
+    style="background: var(--cat)"
+  ></span>
+
+  {/* margin stamp: the machine voice */}
+  <div class="mb-2.5 flex items-baseline gap-x-3 font-mono text-[11px] tracking-[0.06em] text-ink-3 sm:mb-0 sm:flex-col sm:items-end sm:gap-y-1.5 sm:text-right">
+    <time datetime={isoDate(post.data.pubDate)} class="whitespace-nowrap text-ink-2">
+      {formatStamp(post.data.pubDate)}
+    </time>
+    <span class="whitespace-nowrap">No. {number}</span>
+  </div>
+
+  {/* the entry: the human voice */}
+  <div class="min-w-0">
+    <div class="mb-1.5 flex flex-wrap items-baseline gap-x-2.5 font-mono text-[10px] uppercase tracking-[0.18em]">
+      <span style="color: var(--cat)">{cat.title}</span>
+      {latest && (
+        <>
+          <span class="text-ink-3" aria-hidden="true">/</span>
+          <span class="text-accent">latest</span>
+        </>
+      )}
+    </div>
+
+    <Title class="font-display text-[22px] font-medium leading-tight tracking-tight text-ink break-words transition-colors duration-200 group-hover:text-[var(--cat)] sm:text-2xl">
+      <a href={href} class="after:absolute after:inset-0 after:content-['']">{post.data.title}</a>
+    </Title>
+
+    <p class="mt-1.5 font-serif text-[15px] leading-relaxed text-ink-2 line-clamp-2">
+      {post.data.description}
+    </p>
+
+    <span
+      aria-hidden="true"
+      class="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100 motion-reduce:transition-none"
+    >
+      read entry <span class="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+    </span>
+  </div>
+</article>

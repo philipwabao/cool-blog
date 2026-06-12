@@ -1,0 +1,160 @@
+/* ───────────────────────────────────────────────────────────────────
+   global.css — Tailwind entry + design tokens
+   "The Record" design system: an archival research ledger.
+   Two voices: the machine voice (IBM Plex Mono: stamps, indices,
+   metadata) annotating the human voice (Fraunces display, Spectral
+   prose). One rubric-red accent, archival ink hues per category.
+   Content/MDX styling lives in prose.css.
+   ─────────────────────────────────────────────────────────────────── */
+@import "tailwindcss";
+@import "./prose.css";
+
+/* Drive `dark:` utilities off the [data-theme="dark"] attribute that the
+   inline theme script sets — not just the OS media query. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ── Design tokens (light / day archive) ── */
+:root {
+  color-scheme: light dark;
+
+  --paper:       #f8f4ea;
+  --paper-2:     #f1ecdf;
+  --paper-3:     #e9e2d1;
+  --rule:        #ddd6c2;
+  --rule-strong: #b9b098;
+  --ink:         #221d15;
+  --ink-2:       #564f41;
+  --ink-3:       #6e6757;
+  --accent:      #a23b2a; /* rubric red */
+  --accent-soft: #d3a08f;
+  --good:        #55683c;
+
+  /* Per-category archival ink hues */
+  --cat-business:  #8a6118; /* ochre */
+  --cat-personal:  #93445a; /* madder */
+  --cat-technical: #3c5176; /* iron-gall blue */
+  --cat-product:   #55683c; /* moss */
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif:   "Spectral", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --grain-opacity: 0.05;
+  --shadow-card: 0 1px 2px rgba(34, 29, 21, 0.05),
+                 0 10px 28px -18px rgba(34, 29, 21, 0.18);
+}
+
+/* ── Dark (the archive at night) — warm, low glare, lamplit ── */
+[data-theme="dark"] {
+  --paper:       #14110d;
+  --paper-2:     #1c1812;
+  --paper-3:     #242017;
+  --rule:        #2c2820;
+  --rule-strong: #46402f;
+  --ink:         #ece5d3;
+  --ink-2:       #c2b9a4;
+  --ink-3:       #8e8775;
+  --accent:      #d4754f;
+  --accent-soft: #7a4a36;
+  --good:        #9cb37e;
+
+  --cat-business:  #c9a247;
+  --cat-personal:  #c87f93;
+  --cat-technical: #8aa3cc;
+  --cat-product:   #9cb37e;
+
+  --grain-opacity: 0.07;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35),
+                 0 12px 32px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Expose tokens to Tailwind utilities (bg-paper, text-ink-2, font-mono…)
+   `inline` keeps the var() reference so dark-mode overrides flow through. ── */
+@theme inline {
+  --color-paper:       var(--paper);
+  --color-paper-2:     var(--paper-2);
+  --color-paper-3:     var(--paper-3);
+  --color-rule:        var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-ink:         var(--ink);
+  --color-ink-2:       var(--ink-2);
+  --color-ink-3:       var(--ink-3);
+  --color-accent:      var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-good:        var(--good);
+
+  --font-display: var(--display);
+  --font-serif:   var(--serif);
+  --font-mono:    var(--mono);
+
+  --shadow-card: var(--shadow-card);
+}
+
+/* ── Base ── */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Paper grain: a fixed noise field over everything. Pointer-events off,
+     opacity tiny; it reads as texture, not overlay. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 24%, transparent);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+}
+
+/* Category accent helper: any element with data-cat exposes --cat */
+[data-cat="business"]  { --cat: var(--cat-business); }
+[data-cat="personal"]  { --cat: var(--cat-personal); }
+[data-cat="technical"] { --cat: var(--cat-technical); }
+[data-cat="product"]   { --cat: var(--cat-product); }
+
+/* ── Ledger entrance: entries rise in sequence on load ── */
+@keyframes ledger-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ledger > * {
+    animation: ledger-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ledger > *:nth-child(1) { animation-delay: 0.04s; }
+  .ledger > *:nth-child(2) { animation-delay: 0.1s; }
+  .ledger > *:nth-child(3) { animation-delay: 0.16s; }
+  .ledger > *:nth-child(4) { animation-delay: 0.22s; }
+  .ledger > *:nth-child(5) { animation-delay: 0.28s; }
+  .ledger > *:nth-child(6) { animation-delay: 0.34s; }
+  .ledger > *:nth-child(7) { animation-delay: 0.4s; }
+  .ledger > *:nth-child(8) { animation-delay: 0.46s; }
+}

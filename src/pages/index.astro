@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import SectionMark from "../components/SectionMark.astro";
+import LedgerList from "../components/LedgerList.astro";
+import IndexRow from "../components/IndexRow.astro";
+import Newsletter from "../components/Newsletter.astro";
+import { getCollection } from "astro:content";
+import { CATEGORIES, HOMEPAGE_LIMIT } from "../categories";
+import { entryNumbers } from "../lib/format";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const numbers = entryNumbers(posts);
+const recent = posts.slice(0, HOMEPAGE_LIMIT * 2);
+
+const counts = Object.fromEntries(
+  CATEGORIES.map((c) => [c.key, posts.filter((p) => p.data.category === c.key).length])
+);
+---
+<BaseLayout>
+  <Hero />
+
+  {posts.length > 0 && (
+    <section>
+      <SectionMark label="Writing" href="/writing" linkText="all entries" />
+      <div class="mt-6">
+        <LedgerList posts={recent} numbers={numbers} markLatest />
+      </div>
+      {posts.length > recent.length && (
+        <p class="mt-5 text-right">
+          <a
+            href="/writing"
+            class="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-3 transition-colors hover:text-accent"
+          >all entries →</a>
+        </p>
+      )}
+    </section>
+  )}
+
+  <section class="mt-20 sm:mt-24">
+    <SectionMark label="Index" />
+    <div class="mt-6 border-b border-rule">
+      {CATEGORIES.map((cat, i) => (
+        <IndexRow cat={cat} index={i} count={counts[cat.key] ?? 0} />
+      ))}
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>

@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Contact from "../components/Contact.astro";
+---
+<BaseLayout
+  title="About"
+  description="Philip Abao, AI researcher and co-founder of Auxerta."
+  prose
+  colophonLeft="about"
+  colophonRight="last updated / 2026/06/12"
+>
+  <header class="mb-12">
+    <div class="flex items-start gap-6">
+      <img
+        src="/profile.jpg"
+        alt="Philip Abao"
+        width="120"
+        height="120"
+        onerror="this.onerror=null;this.src='/profile.svg'"
+        loading="eager"
+        decoding="async"
+        class="h-24 w-24 flex-none rounded-sm object-cover ring-1 ring-rule-strong"
+      />
+      <div class="min-w-0 pt-1">
+        <h1 class="font-display text-[36px] font-medium leading-none tracking-tight text-ink sm:text-[42px]">
+          Philip Abao
+        </h1>
+        <p class="mt-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">
+          Co-founder, Auxerta / California
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <article>
+    <p>
+      I'm <strong>Philip Abao</strong>. I'm from the United States, and I've
+      lived most of my life in California.
+    </p>
+    <p>
+      I love technology. My uncle introduced me to computer science when I was
+      very young, and showed me the good it can do for the world.
+    </p>
+
+    <h2>What I work on</h2>
+    <p>
+      I'm a co-founder of <strong>Auxerta</strong>, where I'm building a
+      post-transformer architecture with persistent memory and a new form of
+      thought for AI. The goal is models that keep memory and compute flat as
+      inputs grow, instead of recomputing everything at each step.
+    </p>
+
+    <h2>Now</h2>
+    <p>
+      Building at Auxerta, and writing here as the work develops.
+    </p>
+
+    <h2>Elsewhere</h2>
+    <Contact variant="stack" />
+  </article>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LedgerList from "../../components/LedgerList.astro";
+import { getCollection } from "astro:content";
+import { entryNumbers } from "../../lib/format";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const numbers = entryNumbers(posts);
+const total = posts.length;
+---
+<BaseLayout
+  title="Writing"
+  description="Essays and notes by Philip Abao."
+  colophonLeft={`entries / ${total}`}
+  colophonRight="ordered / newest first"
+>
+  <p class="mb-4 font-mono text-[11px] uppercase tracking-[0.22em] text-ink-3">
+    <span class="text-accent" aria-hidden="true">§</span> All entries
+  </p>
+  <h1 class="font-display text-[38px] font-medium leading-none tracking-tight text-ink sm:text-[46px]">
+    Writing
+  </h1>
+
+  {total === 0 ? (
+    <p class="mt-8 font-serif text-[17px] italic text-ink-3">Nothing here yet.</p>
+  ) : (
+    <div class="mt-10">
+      <LedgerList posts={posts} numbers={numbers} headingLevel={2} />
+    </div>
+  )}
+</BaseLayout>

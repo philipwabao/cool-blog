@@ -1,0 +1,42 @@
+---
+import Contact from "./Contact.astro";
+---
+<section class="pb-16 pt-2 sm:pb-20 sm:pt-6">
+  <p class="mb-6 font-mono text-[11px] uppercase tracking-[0.24em] text-ink-3">
+    Co-founder, Auxerta / California
+  </p>
+
+  <h1 class="font-display text-[48px] font-medium leading-none tracking-[-0.02em] text-ink sm:text-[68px]">
+    Philip Abao
+  </h1>
+
+  <div class="mt-10 grid gap-y-6 sm:mt-12 sm:grid-cols-[8.5rem_1fr] sm:gap-x-10">
+    <figure class="m-0">
+      <img
+        src="/profile.jpg"
+        alt="Philip Abao"
+        width="120"
+        height="120"
+        onerror="this.onerror=null;this.src='/profile.svg'"
+        loading="eager"
+        decoding="async"
+        class="h-20 w-20 rounded-sm object-cover ring-1 ring-rule-strong sm:ml-auto sm:h-[5.5rem] sm:w-[5.5rem]"
+      />
+    </figure>
+
+    <div class="min-w-0">
+      <p class="max-w-[56ch] font-serif text-[17px] leading-relaxed text-ink-2">
+        At <span class="text-ink">Auxerta</span>, I'm building a post-transformer
+        architecture with persistent memory and a new form of thought for AI.
+        This site is the record: what I learn, what I break, what I make.
+        <a
+          href="/about"
+          class="ml-1 whitespace-nowrap border-b border-accent-soft text-ink transition-colors hover:border-accent hover:text-accent"
+        >More →</a>
+      </p>
+      <div class="mt-6">
+        <Contact variant="row" />
+      </div>
+    </div>
+  </div>
+</section>

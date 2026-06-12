@@ -1,0 +1,32 @@
+---
+title: "Kestrel"
+description: "Custom text classifiers on our persistent memory architecture for 24/7 workloads."
+pubDate: 2026-05-30
+category: "product"
+tag: "note"
+centerHero: true
+---
+
+import KestrelStream from '../../components/mdx/KestrelStream.astro';
+
+Happy to release Kestrel, a custom text classifier on our persistent memory architecture for 24/7 workloads.
+
+Kestrel is a different approach to an LLM. I mean, it is one — a baseline that has seen over many, many data.
+
+It's named after the bird. A small falcon known for its ability to hover in place while hunting.
+
+![American Kestrel](/images/kestrel.jpg)
+
+[Wikipedia](https://en.wikipedia.org/wiki/American_kestrel)
+
+Fun fact: Male and female kestrels look quite different. The males have blue-gray wings while the females are mostly reddish-brown.
+
+We built it this way because the architecture keeps memory and compute flat no matter how long the input is. That makes it realistic to run classifiers continuously at high volume.
+
+All results so far come from fine-tunes on simulated labeled pairs. Even with that, we are reaching 99.2% accuracy on the tasks we've tested once we have a full training set.
+
+The flat resource usage is the main reason this approach looks promising for 24/7 production use.
+
+This is especially useful for companies that need reliable chat moderation running around the clock.
+
+<KestrelStream />

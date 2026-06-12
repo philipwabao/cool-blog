@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LedgerList from "../components/LedgerList.astro";
+import { getCollection } from "astro:content";
+import { CATEGORIES, sectionNum, type CategoryMeta } from "../categories";
+import { entryNumbers } from "../lib/format";
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((cat, i) => ({
+    params: { category: cat.key },
+    props: { cat, index: i },
+  }));
+}
+
+interface Props {
+  cat: CategoryMeta;
+  index: number;
+}
+
+const { cat, index } = Astro.props as Props;
+
+// Numbers are permanent across the whole record, so compute them from
+// every post, then filter for display.
+const all = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const numbers = entryNumbers(all);
+const posts = all.filter((p) => p.data.category === cat.key);
+---
+<BaseLayout
+  title={cat.title}
+  description={cat.description}
+  colophonLeft={`entries / ${posts.length}`}
+  colophonRight="ordered / newest first"
+>
+  <div data-cat={cat.key}>
+    <p class="mb-4 font-mono text-[11px] uppercase tracking-[0.22em] text-ink-3">
+      <span style="color: var(--cat)" aria-hidden="true">{sectionNum(index)}</span> / index
+    </p>
+    <h1 class="font-display text-[38px] font-medium leading-none tracking-tight text-ink sm:text-[46px]">
+      {cat.title}
+    </h1>
+    <p class="mt-4 font-serif text-[16px] italic leading-relaxed text-ink-2">{cat.blurb}</p>
+
+    {posts.length === 0 ? (
+      <p class="mt-8 font-serif text-[17px] italic text-ink-3">No entries yet.</p>
+    ) : (
+      <div class="mt-10">
+        <LedgerList posts={posts} numbers={numbers} headingLevel={2} />
+      </div>
+    )}
+
+    <p class="mt-12">
+      <a
+        href="/writing"
+        class="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-3 transition-colors hover:text-accent"
+      >← all entries</a>
+    </p>
+  </div>
+</BaseLayout>

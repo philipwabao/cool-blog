@@ -1,0 +1,30 @@
+---
+interface Props {
+  variant?: "row" | "stack";
+}
+const { variant = "row" } = Astro.props;
+const links = [
+  { key: "mail", label: "philip.abao@outlook.com", href: "mailto:philip.abao@outlook.com" },
+  { key: "linkedin", label: "in/philip-abao", href: "https://www.linkedin.com/in/philip-abao/" },
+  { key: "x", label: "@philip_abao", href: "https://x.com/philip_abao" },
+];
+const wrap =
+  variant === "row"
+    ? "flex flex-wrap items-baseline gap-x-7 gap-y-2.5"
+    : "flex flex-col gap-2.5";
+---
+<ul class:list={["contact", wrap]}>
+  {links.map((l) => (
+    <li>
+      <a
+        href={l.href}
+        target={l.href.startsWith("http") ? "_blank" : undefined}
+        rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+        class="group inline-flex items-baseline gap-x-2 font-mono text-[12px] tracking-[0.02em] text-ink-2 transition-colors hover:text-accent"
+      >
+        <span class="text-ink-3" aria-hidden="true">{l.key} /</span>
+        <span class="border-b border-transparent transition-colors group-hover:border-accent-soft">{l.label}</span>
+      </a>
+    </li>
+  ))}
+</ul>

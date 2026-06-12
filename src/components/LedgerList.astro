@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import LedgerEntry from "./LedgerEntry.astro";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+  /** Permanent entry numbers keyed by post id (from entryNumbers()). */
+  numbers: Map<string, string>;
+  headingLevel?: 2 | 3;
+  /** Stamp the first entry as "latest". */
+  markLatest?: boolean;
+}
+
+const { posts, numbers, headingLevel = 3, markLatest = false } = Astro.props;
+---
+<div class="relative">
+  {/* the spine: one continuous line the record hangs from */}
+  <span aria-hidden="true" class="absolute inset-y-0 left-[9.75rem] hidden w-px bg-rule sm:block"></span>
+
+  <div class="ledger border-b border-rule">
+    {posts.map((p, i) => (
+      <LedgerEntry
+        post={p}
+        number={numbers.get(p.id) ?? "000"}
+        headingLevel={headingLevel}
+        latest={markLatest && i === 0}
+      />
+    ))}
+  </div>
+</div>

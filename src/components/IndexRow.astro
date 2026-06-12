@@ -1,0 +1,41 @@
+---
+import type { CategoryMeta } from "../categories";
+import { sectionNum } from "../categories";
+
+interface Props {
+  cat: CategoryMeta;
+  index: number;
+  count: number;
+}
+const { cat, index, count } = Astro.props;
+const empty = count === 0;
+---
+<a
+  href={`/${cat.key}/`}
+  data-cat={cat.key}
+  class="group relative grid border-t border-rule py-5 sm:grid-cols-[8.5rem_1fr] sm:gap-x-10"
+>
+  <span
+    class="mb-1 font-mono text-[11px] tracking-[0.06em] sm:mb-0 sm:text-right"
+    style="color: var(--cat)"
+  >{sectionNum(index)}</span>
+
+  <span class="flex min-w-0 items-baseline gap-x-4">
+    <span class="flex-none font-display text-xl font-medium tracking-tight text-ink transition-colors duration-200 group-hover:text-[var(--cat)]">
+      {cat.title}
+    </span>
+    <span class="hidden min-w-4 flex-1 self-center border-b border-dashed border-rule sm:block" aria-hidden="true"></span>
+    <span class="flex-none whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">
+      {empty ? "no entries yet" : `${count} ${count === 1 ? "entry" : "entries"}`}
+    </span>
+    <span
+      aria-hidden="true"
+      class="flex-none -translate-x-1 font-mono text-[11px] opacity-0 transition duration-200 group-hover:translate-x-0 group-hover:opacity-100 motion-reduce:transition-none"
+      style="color: var(--cat)"
+    >→</span>
+  </span>
+
+  <span class="mt-1 font-serif text-[14px] italic leading-relaxed text-ink-3 sm:col-start-2">
+    {cat.blurb}
+  </span>
+</a>

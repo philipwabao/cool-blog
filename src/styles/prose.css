@@ -1,0 +1,445 @@
+/* ───────────────────────────────────────────────────────────────────
+   prose.css — content & post-page styles
+   These are the bespoke, content-level styles used by MDX posts and the
+   article reading experience. They are intentionally kept as hand-authored
+   CSS (rather than Tailwind utilities) because they style markup that lives
+   inside MDX content and the custom research-note components
+   (charts, Kestrel visualizer, tribute lists, etc.).
+
+   All values resolve against the design tokens defined in global.css
+   (--ink, --paper, --serif, ...), so light/dark theming "just works".
+   ─────────────────────────────────────────────────────────────────── */
+
+/* ── Post hero (title + description), rendered above the article ── */
+.post-title-hero {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(34px, 5vw, 50px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+.post-desc {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(18px, 2.4vw, 21px);
+  color: var(--ink-2);
+  margin: 0 0 40px;
+  line-height: 1.45;
+}
+.post-title-hero.is-centered,
+.post-desc.is-centered {
+  text-align: center;
+}
+.post-desc.is-centered {
+  max-width: 52ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Article body ── */
+.prose article {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+.prose article > * + * { margin-top: 1.15em; }
+.prose article h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 27px;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+  margin-bottom: 0.4em;
+  color: var(--ink);
+}
+.prose article h2 em { font-style: italic; color: var(--ink-2); }
+.prose article h3 {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 21px;
+  margin-top: 1.6em;
+  margin-bottom: 0.3em;
+  color: var(--ink);
+}
+/* Base paragraph margin comes from Tailwind preflight (0); inter-element
+   spacing is governed by the `> * + *` flow rule above. Do NOT add a blanket
+   `.prose article p { margin: 0 }` here — its higher specificity would defeat
+   that flow rule and jam consecutive paragraphs together. */
+.prose article strong { color: var(--ink); font-weight: 600; }
+.prose article em { font-style: italic; }
+.prose article a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-soft);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.prose article a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Restore list markers (Tailwind's preflight removes them) */
+.prose article ul, .prose article ol {
+  padding-left: 1.4em;
+  margin: 0;
+}
+.prose article ul { list-style: disc; }
+.prose article ol { list-style: decimal; }
+.prose article li::marker { color: var(--ink-3); }
+.prose article li + li { margin-top: 0.4em; }
+
+/* The Contact component renders a <ul>; keep it marker-free inside prose */
+.prose article .contact { list-style: none; padding-left: 0; margin: 0; }
+.prose article .contact li { margin: 0; }
+
+.prose article blockquote {
+  border-left: 2px solid var(--accent);
+  background: transparent;
+  padding: 6px 0 6px 32px;
+  margin: 0 0 0 4px;
+  max-width: 680px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.prose article blockquote p { margin: 0; }
+.prose article blockquote p + p {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+.prose article blockquote p + p strong { color: var(--ink-2); font-weight: 600; }
+.prose article blockquote p + p em { font-style: italic; color: var(--ink-3); }
+
+.prose article blockquote + blockquote,
+.prose article p + blockquote,
+.prose article hr + blockquote {
+  margin-top: 1.6em;
+}
+
+.prose article .quote-stamp {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  margin: 0 0 0 4px;
+}
+.prose article .quote-stamp + blockquote { margin-top: 14px; }
+
+.prose article code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--paper-2);
+  padding: 1px 6px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+.prose article pre {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  line-height: 1.55;
+  position: relative;
+}
+.prose article pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+.prose article hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 2.4em 0;
+}
+.prose article img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+/* katex */
+.prose article .katex-display {
+  margin: 1.5em 0;
+  padding: 6px 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.prose article .katex { font-size: 1.04em; }
+
+/* ─── Research-note elements ─── */
+.prose article .meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0;
+}
+.prose article .meta-grid > div { background: var(--paper); padding: 12px 14px; }
+.prose article .meta-grid .k {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-3); margin-bottom: 5px;
+}
+.prose article .meta-grid .v { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--ink); }
+.prose article .meta-grid .v.warn { color: var(--accent); }
+
+.prose article .tldr {
+  border-left: 2px solid var(--accent);
+  background: var(--paper-2);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 20px;
+  font-size: 15px; line-height: 1.6; color: var(--ink-2);
+}
+.prose article .tldr strong { color: var(--ink); font-weight: 600; }
+
+.prose article table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 0; }
+.prose article thead th {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3); text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--ink);
+}
+.prose article tbody td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); }
+.prose article tbody tr:last-child td { border-bottom: 1px solid var(--ink); }
+.prose article thead th + th, .prose article tbody td + td {
+  text-align: right; font-family: var(--mono); font-size: 12.5px;
+}
+
+.prose article figure { margin: 0; }
+.prose article figcaption {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.03em;
+  color: var(--ink-3); margin-top: 12px; line-height: 1.5;
+}
+.prose article figcaption b { color: var(--ink-2); font-weight: 600; }
+
+.benchchart { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.benchrow {
+  display: grid; grid-template-columns: 132px 1fr 52px; align-items: center; gap: 14px;
+  padding: 8px 0; border-bottom: 1px solid var(--rule);
+}
+.benchrow:last-child { border-bottom: none; }
+.benchrow .bl { font-size: 12.5px; color: var(--ink); }
+.benchrow .bt { height: 8px; background: var(--paper-2); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.benchrow .bt > span { display: block; height: 100%; background: var(--accent); }
+.benchrow .bv { font-family: var(--mono); font-size: 12px; font-weight: 600; text-align: right; color: var(--ink); }
+
+/* multi-run comparison chart */
+.cmp-legend {
+  display: flex; flex-wrap: wrap; gap: 18px; margin: 0 0 16px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.cmp-legend .lg { display: flex; align-items: center; gap: 7px; }
+.cmp-legend i { width: 11px; height: 11px; display: block; border-radius: 2px; }
+.cmp-chart { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.cmp-group { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.cmp-group:last-child { border-bottom: none; }
+.cmp-group .gl { font-size: 12.5px; color: var(--ink); margin-bottom: 7px; }
+.cmp-bar { display: grid; grid-template-columns: 1fr 44px; gap: 12px; align-items: center; }
+.cmp-bar + .cmp-bar { margin-top: 5px; }
+.cmp-track { height: 7px; background: var(--paper-2); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.cmp-track > span { display: block; height: 100%; }
+.cmp-v { font-family: var(--mono); font-size: 11px; font-weight: 600; text-align: right; color: var(--ink-2); }
+
+/* tribute container */
+.prose article .tribute {
+  border: 1px solid var(--rule);
+  background: var(--paper-2);
+  border-radius: 8px;
+  padding: 4px 16px 6px;
+  margin: 0;
+  max-width: 380px;
+}
+.prose article .tribute ol { list-style: none; padding: 0; margin: 0; }
+.prose article .tribute li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+  padding: 6px 0; border-top: 1px solid var(--rule);
+}
+.prose article .tribute li:first-child { border-top: none; }
+.prose article .tribute .t-name { font-family: var(--serif); font-size: 15px; color: var(--ink); }
+.prose article .tribute .t-note {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.04em;
+  color: var(--ink-3); text-align: right; white-space: nowrap;
+}
+
+.prose article .refs { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.prose article .refs ol { padding-left: 1.4em; margin: 0; }
+.prose article .refs li + li { margin-top: 8px; }
+
+@media (max-width: 560px) {
+  .benchrow { grid-template-columns: 96px 1fr 44px; gap: 10px; }
+}
+
+/* memoriam posts get a narrower, centered, quieter layout */
+.prose article.memoriam {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.prose article.memoriam .post-title-hero {
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+.prose article.memoriam > p:first-of-type { text-align: center; }
+.prose article.memoriam p {
+  font-size: 18px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.prose article.memoriam > p + p { margin-top: 1.5em; }
+.prose article.memoriam hr { width: 60px; margin: 2.4em auto; }
+.prose article.memoriam p:last-child {
+  margin-top: 2.8em;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ink-3);
+}
+.prose article.memoriam p:last-child::before {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 1px;
+  background: var(--rule);
+  margin: 0 auto 1.8em;
+}
+
+.prose .kestrel-subtitle,
+article .kestrel-subtitle {
+  text-align: center !important;
+  margin-bottom: 1.75em;
+  color: var(--ink-2);
+}
+
+/* ── Reading progress bar (driven by PostLayout script) ── */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 100;
+  transition: width 0.05s linear;
+  pointer-events: none;
+}
+
+/* ── Code copy button (progressive enhancement) ── */
+.code-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-3);
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.1s, color 0.1s, border-color 0.1s;
+}
+.prose article pre:hover .code-copy-btn { opacity: 1; }
+.code-copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+.code-copy-btn.copied { color: var(--good); border-color: var(--good); }
+
+/* ── Kestrel 24/7 chat moderation visualizer ── */
+.kestrel-viz {
+  border: 1px solid var(--rule);
+  background: var(--paper-2);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.kestrel-viz .viz-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  color: var(--ink-2);
+}
+.kestrel-viz .viz-header .live { display: inline-flex; align-items: center; gap: 7px; }
+.kestrel-viz .live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--good); flex: none;
+  animation: kestrelPulse 1.6s ease-in-out infinite;
+}
+@keyframes kestrelPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.65); }
+}
+.kestrel-viz .status { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.kestrel-viz .messages { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.kestrel-viz .msg {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+  padding: 8px 10px; background: var(--paper); border: 1px solid var(--rule); border-radius: 5px;
+}
+.kestrel-viz .msg .text { flex: 1; color: var(--ink); line-height: 1.4; }
+.kestrel-viz .label { font-size: 10px; padding: 2px 8px; white-space: nowrap; align-self: flex-start; border-radius: 4px; }
+.kestrel-viz .label.high { background: #3a2a2a; color: #e88; }
+.kestrel-viz .label.med { background: #3a3222; color: #eb8; }
+.kestrel-viz .label.low { background: #2a3a2a; color: #8e8; }
+@keyframes kestrelMsgIn {
+  from { opacity: 0; transform: translateY(-7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kestrel-viz .msg.is-new { animation: kestrelMsgIn 0.45s ease both; }
+.kestrel-viz .resource { border-top: 1px solid var(--rule); padding-top: 12px; }
+.kestrel-viz .resource-label { color: var(--ink-2); margin-bottom: 8px; }
+.kestrel-viz .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.kestrel-viz .bar-label { width: 130px; color: var(--ink); }
+.kestrel-viz .bar { flex: 1; height: 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; position: relative; overflow: hidden; }
+.kestrel-viz .bar .fill { height: 100%; background: #b5572e; transition: width 0.6s ease, background 0.4s ease; }
+.kestrel-viz .bar-row.kv2 .fill { background: #7a9cc8; }
+.kestrel-viz .bar-row.traditional .fill { background: var(--accent); }
+.kestrel-viz .bar-row.traditional .fill.warn { background: #c0392b; }
+.kestrel-viz .value { width: 60px; text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.kestrel-viz .value.crash { color: #e74c3c; font-weight: 600; }
+@keyframes kestrelShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+}
+.kestrel-viz .bar-row.crashed { animation: kestrelShake 0.28s ease 2; }
+.kestrel-viz.is-done .live-dot { animation: none; background: var(--ink-3); }
+.kestrel-viz .resource-note { margin-top: 10px; color: var(--ink-3); font-size: 11px; line-height: 1.45; }
+
+/* ── Prose responsive ── */
+@media (max-width: 760px) {
+  .prose article { font-size: 16px; }
+  .prose article table { display: block; overflow-x: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kestrel-viz .live-dot,
+  .kestrel-viz .msg.is-new,
+  .kestrel-viz .bar-row.crashed { animation: none; }
+  .reading-progress { transition: none; }
+}
+
+/* ── Print ── */
+@media print {
+  .reading-progress, .code-copy-btn { display: none !important; }
+  .prose article { font-size: 12pt; line-height: 1.55; color: black; }
+  .prose article h2 { font-size: 18pt; page-break-after: avoid; }
+  .prose article a { color: black; border-bottom: 0.5px solid #ccc; }
+  .prose article img { border: 0.5px solid #999; }
+}
